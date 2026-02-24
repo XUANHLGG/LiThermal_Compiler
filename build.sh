@@ -1,19 +1,12 @@
 #!/bin/bash
 ROOTPATH=`pwd`
-if [ -d $ROOTPATH/LiThermal ]; then
-    echo "Updating..."
-    git submodule update --init --recursive
-    cd LiThermal
-    git checkout master
-    git pull origin master
-    cd ..
-else
-    echo "Folder not exist, cloning..."
-    git clone https://github.com/diylxy/LiThermal.git
-fi
+
+# Do NOT force-pull/checkout upstream; respect the submodule commit recorded in this repo.
+# Just make sure submodules are initialized.
+git submodule update --init --recursive
 
 export STAGING_DIR=$ROOTPATH/target
-mkdir build
+mkdir -p build
 cd build
 cmake $ROOTPATH/LiThermal -DROOTPATH=$ROOTPATH -DCMAKE_TOOLCHAIN_FILE=$ROOTPATH/LiThermal/toolchain.cmake
 make -j`nproc`
